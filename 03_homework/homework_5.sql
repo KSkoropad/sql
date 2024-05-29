@@ -136,4 +136,19 @@ Finally, make sure you have a WHERE statement to update the right row,
 	you'll need to use product_units.product_id to refer to the correct row within the product_units table. 
 When you have all of these components, you can run the update statement. */
 
-Still working on it
+UPDATE product_units
+SET current_quantity = COALESCE(y.quantity, 0)
+FROM (
+    SELECT pu.product_id, vi.quantity
+    FROM product_units pu
+    INNER JOIN (
+        SELECT DISTINCT product_id, quantity
+        FROM (
+            SELECT product_id, quantity, 
+            ROW_NUMBER() OVER (PARTITION BY product_id ORDER BY market_date DESC) as row_num
+            FROM vendor_inventory
+        ) x
+        WHERE x.row_num=1
+    ) vi ON pu.product_id = vi.product_id
+) y
+WHERE product_units.product_id = y.product_id;
