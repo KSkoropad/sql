@@ -16,6 +16,34 @@ _Hint, search type 1 vs type 2 slowly changing dimensions._
 Bonus: Are there privacy implications to this, why or why not?
 ```
 Your answer...
+Type 1: 
+CUSTOMER_ADDRESS Table:
+
+Columns:
+customer_id 
+address
+city
+state
+postal_code
+In this design, when a customer's address changes, the existing record in the CUSTOMER_ADDRESS table would be updated with the new address details. There's no need for additional columns to track historical changes.
+
+Type 2: Retain Changes:
+CUSTOMER_ADDRESS Table:
+
+Columns:
+customer_address_id 
+customer_id 
+address
+city
+state
+postal_code
+start_date
+end_date (nullable)
+In this design, when a customer's address changes, a new record is inserted into the CUSTOMER_ADDRESS table with the updated address details along with the start date of validity. The end date field can be used to mark the end of validity for the previous address, which remains open-ended until the next change occurs. This allows for a historical view of the customer's addresses over time.
+
+So, the Type 1 architecture overwrites existing data with each change, while the Type 2 architecture retains historical changes by adding new records with start and end dates to track the history of customer addresses.
+
+Yes, there are privacy implications to this. There is still a risk if unauthorized individuals gain access to the system and view the current address information
 ```
 
 ## Question 4
@@ -24,7 +52,8 @@ Review the AdventureWorks Schema [here](https://i.stack.imgur.com/LMu4W.gif)
 Highlight at least two differences between it and your ERD. Would you change anything in yours?
 ```
 Your answer...
-```
+This ERD is more detailed compared to mine. It is divided into different sections like sales, purchases, person, HR, etc. In this ERD, primary and foreign keys are identified.
+I would definitely add sections; it's really handy, and more tables related to orders and sales.
 
 # Criteria
 
